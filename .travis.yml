@@ -20,4 +20,7 @@ after_success:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 
   # take images and push to docker hub
-  - docker push ckpm/multi-client ckpm/multi-nginx ckpm/multi-server ckpm/multi-worker
+  - docker push ckpm/multi-client
+  - docker push ckpm/multi-nginx
+  - docker push ckpm/multi-server
+  - docker push ckpm/multi-worker
