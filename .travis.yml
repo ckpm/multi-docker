@@ -1,0 +1,23 @@
+sudo: required
+services:
+  - docker
+
+# test the client (react app) only
+before_install:
+  - docker build -t ckpm/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run ckpm/react-test npm run test -- --coverage
+
+after_success:
+  # after the test is successful, build 4 images
+  - docker build -t ckpm/multi-client ./client
+  - docker build -t ckpm/multi-nginx ./nginx
+  - docker build -t ckpm/multi-server ./server
+  - docker build -t ckpm/multi-worker ./worker
+
+  # login to docker cli
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # take images and push to docker hub
+  - docker push ckpm/multi-client ckpm/multi-nginx ckpm/multi-server ckpm/multi-worker
